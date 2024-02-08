@@ -1,0 +1,22 @@
+<div class="stack stack-lg mx-auto">
+  <div class="stack">
+    <h1 class="font-bold text-xl">Simple Host</h1>
+    <p class="tny-txt">How to host simply, cheaply</p>
+  </div>
+  <div class="crd mx-auto shadow-hard">
+    <p class="heading">Simple Rails hosting tips, occasionally</p>
+    <%= form_with model: @newsletter_signup, class: "frm" do |form| %>
+      <%= form.label :email %>
+      <%= form.email_field :email %>
+      <%= form.submit "Sign up", class: "" %>
+    <% end %>
+
+  </div>
+
+  <div class="spaced-cluster pll info mx-auto w-[20ch] text-lg">
+    <p>Sign ups</p>
+    <p><%= NewsletterSignup.count %></p>
+  </div>
+
+
+</div>

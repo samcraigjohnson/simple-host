@@ -1,0 +1,68 @@
+# Name of your application. Used to uniquely configure containers.
+service: simple-host
+
+# Name of the container image.
+image: sjohnson540/simple-host
+
+ssh:
+  proxy: "5.78.89.183"
+
+# Deploy to these servers.
+servers:
+  web:
+    hosts:
+      - 10.0.0.2
+    labels:
+      traefik.http.routers.simple-host_secure.entrypoints: websecure
+      traefik.http.routers.simple-host_secure.rule: Host(`simple-host.net`)
+      traefik.http.routers.simple-host_secure.tls: true
+  sidekiq:
+    hosts:
+      - 10.0.0.2
+    cmd: bundle exec sidekiq -C config/sidekiq.yml
+
+traefik:
+  options:
+    publish:
+      - "443:443"
+  args:
+    entryPoints.websecure.address: ":443"
+
+accessories:
+  redis-7.2:
+    image: redis:7.2
+    host: 10.0.0.4
+    port: "6379:6379"
+    volumes:
+      - "redis_data:/data"
+
+  # Names can't be duplicated (updates, etc)
+  pg-16.1:
+    image: postgres:16.1
+    host: 10.0.0.3
+    port: "5432:5432"
+    env:
+      clear:
+        POSTGRES_USER: postgres
+      secret:
+        - POSTGRES_PASSWORD
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+
+# Credentials for your image host.
+registry:
+  username: sjohnson540
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Inject ENV variables into containers (secrets come from .env).
+# Remember to run `kamal env push` after making changes!
+env:
+  clear:
+    REDIS_URL: "redis://10.0.0.4:6379"
+    POSTGRES_HOST: 10.0.0.3
+    POSTGRES_USER: postgres
+
+  secret:
+    - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD

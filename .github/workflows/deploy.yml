@@ -27,10 +27,11 @@ jobs:
           echo "RAILS_MASTER_KEY=$RAILS_MASTER_KEY" >> .env
           echo "KAMAL_REGISTRY_PASSWORD=$KAMAL_REGISTRY_PASSWORD" >> .env
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 5.78.89.183 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 5.78.89.183 >> ~/.ssh/known_hosts || echo "failed"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
 
       - name: Kamal Deploy
         run: kamal deploy

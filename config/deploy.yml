@@ -48,6 +48,25 @@ accessories:
         - POSTGRES_PASSWORD
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
+      - "/etc/postgresql.conf:/etc/postgresql.conf"
+      - "/etc/pg_hba.conf:/etc/pg_hba.conf"
+
+    cmd: sh -c "cp /etc/pg_hba.conf /etc/postgresql.conf /var/lib/postgresql/data && docker-entrypoint.sh postgres"
+
+  pg-16.1-secondary:
+    image: postgres:16.1
+    host: 10.0.0.5
+    port: "5432:5432"
+    env:
+      clear:
+        POSTGRES_USER: postgres
+      secret:
+        - POSTGRES_PASSWORD
+    volumes:
+      - "secondary_postgres_data:/var/lib/postgresql/data"
+      - "/etc/secondary-postgresql.conf:/etc/postgresql.conf"
+
+    cmd: sh -c "cp /etc/postgresql.conf /var/lib/postgresql/data && docker-entrypoint.sh postgres"
 
 # Credentials for your image host.
 registry:

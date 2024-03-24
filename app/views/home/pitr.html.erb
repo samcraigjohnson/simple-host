@@ -1,0 +1,46 @@
+<% timestr = "%Y-%m-%d %H:%M:%S" %>
+
+<div class="stack-lg mx-auto max-w-[55ch] w-[55ch] mb-12">
+  <p><%= "Now: #{Time.current.strftime(timestr)}" %></p>
+  <%= form_with url: delete_info_path, method: :delete do |f| %>
+    <button
+      class="
+        p-10
+        text-lg
+        bg-red-100
+        text-red-800
+        rounded
+        border
+        border-red-200
+        w-full
+      "
+    >
+      DO NOT PRESS!
+    </button>
+  <% end %>
+
+  <%= form_with url: create_info_path, method: :post do |f| %>
+    <button
+      class="
+        p-10
+        text-lg
+        bg-green-100
+        text-green-900
+        rounded
+        border
+        border-green-200
+        w-full
+      "
+    >PRESS!</button>
+  <% end %>
+
+  <div class="stack">
+    <% @important_infos&.each do |ii| %>
+      <div class="spaced-cluster border p-4 rounded text-gray-700">
+        <p class="min-w-[10ch]"><%= ii.id %></p>
+        <p class="font-bold">IMPORTANT USER INFO</p>
+        <p><%= ii.created_at.strftime(timestr) %></p>
+      </div>
+    <% end %>
+  </div>
+</div>

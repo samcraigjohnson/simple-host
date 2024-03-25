@@ -39,6 +39,11 @@ secondary() {
   kamal accessory exec -i $SECONDARY_HOST "$1"
 }
 
+upload() {
+  scp -o ProxyJump=root@$JUMP_IP -P 22 \
+      "$1" root@$PRIMARY_IP:/etc/
+}
+
 ##############################
 ### Primary server setup   ###
 ##############################

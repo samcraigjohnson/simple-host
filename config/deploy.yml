@@ -38,23 +38,37 @@ accessories:
 
   # Names can't be duplicated (updates, etc)
   pg-16.1:
-    image: postgres:16.1
+    image: sjohnson540/simple-host-postgres:latest
     host: 10.0.0.3
     port: "5432:5432"
     env:
       clear:
         POSTGRES_USER: postgres
+        AWS_DEFAULT_REGION: us-west-2
+        AWS_S3_BUCKET: "simple-host-backups"
       secret:
         - POSTGRES_PASSWORD
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
-      - "/etc/postgresql.conf:/etc/postgresql.conf"
-      - "/etc/pg_hba.conf:/etc/pg_hba.conf"
 
-    cmd: sh -c "cp /etc/pg_hba.conf /etc/postgresql.conf /var/lib/postgresql/data && docker-entrypoint.sh postgres"
+  pg-16.1-backup:
+    image: sjohnson540/simple-host-postgres:latest
+    host: 10.0.0.3
+    env:
+      clear:
+        POSTGRES_USER: postgres
+        AWS_DEFAULT_REGION: us-west-2
+        AWS_S3_BUCKET: "simple-host-backups"
+        POSTGRES_HOST: 10.0.0.3
+      secret:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+    cmd: bash -c "while true; do /etc/backup_command.sh; sleep 86400; done"
 
   pg-16.1-secondary:
-    image: postgres:16.1
+    image: postgresql:16.1
     host: 10.0.0.5
     port: "5432:5432"
     env:
